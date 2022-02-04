@@ -1,0 +1,84 @@
+---
+title: "1117 inclass"
+author: "Linda"
+date: "11/17/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Clustering
+
+### Hieratchical clustering
+
+```{r}
+set.seed(2)
+
+x= matrix(rnorm(50*2), ncol = 2)
+#rnorm generate random normal variables
+head(x)
+plot(x)
+
+x[1:25, 1]= x[1:25, 1]+3
+x[1:25, 2]= x[1:25, 1]-4
+plot(x)
+
+?hclust
+?dist
+?kmeans
+
+dist.x=dist(x) #find distance matrixs
+hc.1=hclust(dist.x, method = "complete") #complete: define the linkage of two clusters
+hc.2=hclust(dist.x, method = "single") 
+hc.3=hclust(dist.x, method = "ward.D") 
+
+plot(hc.1, main= "Complete linkage")
+plot(hc.2, main= "single linkage")
+plot(hc.3, main= "ward.D")
+
+result <- cutree(hc.3, 2)
+plot(x, col= result+2, main = "ward's linkage method")
+#plot(x, col= result, main = "ward's linkage method")
+#change color
+plot(x, col= result+2, main = "ward.D")
+
+result.c <- cutree(hc.1, 2)
+x.c <- cbind(x, result.c)
+head(x.c, 3)
+
+#select cluster 1
+c1 <- x.c[,3]==1
+
+mean(x.c[x.c[,3]==1, 1]) #avg for x1
+mean(x.c[x.c[,3]==1, 2]) #avg for 
+```
+##
+
+```{r}
+set.seed(2)
+x= matrix(rnorm(50*2), ncol = 2)
+
+x[1:25, 1]= x[1:25, 1]+3
+x[1:25, 2]= x[1:25, 2]-4
+plot(x)
+
+km.out=kmeans(x, 2, nstart = 20)
+km.out$cluster
+km.out$centers
+km.out$tot.withinss
+
+km.res <- rep(NA, 4)
+for (i in 1:4){
+km.out=kmeans(x, i, nstart = 20)
+km.res[i] <- km.out$tot.withinss
+}
+
+plot(km.res, type="o")
+km.out=kmeans(x, 2, nstart = 20)
+plot(x, col=km.out$cluster)
+```
+
